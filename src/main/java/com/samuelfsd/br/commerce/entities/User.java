@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class User extends AbstractEntity {
     private String email;
     private String password;
     private String phone;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
 
     private String[] roles;
 
@@ -28,7 +28,7 @@ public class User extends AbstractEntity {
 
     public User(){}
 
-    public User(String name, String email, String password, String phone, LocalDateTime birthDate, String[] roles, List<Order> orders) {
+    public User(String name, String email, String password, String phone, LocalDate birthDate, String[] roles, List<Order> orders) {
         super();
         this.name = name;
         this.email = email;
@@ -71,11 +71,11 @@ public class User extends AbstractEntity {
         this.phone = phone;
     }
 
-    public LocalDateTime getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDateTime birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
