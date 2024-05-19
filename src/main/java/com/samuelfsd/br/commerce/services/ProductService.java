@@ -5,6 +5,7 @@ import com.samuelfsd.br.commerce.dtos.product.ProductResponseDTO;
 import com.samuelfsd.br.commerce.entities.Product;
 import com.samuelfsd.br.commerce.repositories.ProductRepository;
 import com.samuelfsd.br.commerce.util.ICRUDHandler;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ModelMapper mapper;
 
 
     @Override
@@ -39,14 +43,7 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
 
         Product product = productOpt.get();
 
-        ProductResponseDTO dto = new ProductResponseDTO();
-        dto.setId(product.getId());
-        dto.setName(product.getName());
-        dto.setDescription(product.getDescription());
-        dto.setPrice(product.getPrice());
-        dto.setImgUrl(dto.getImgUrl());
-
-        return dto;
+        return mapper.map(product, ProductResponseDTO.class);
     }
 
     @Override
