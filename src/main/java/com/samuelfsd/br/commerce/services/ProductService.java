@@ -14,11 +14,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductResponseDTO> {
 
-    // TODO: complete all methods
+    /*TODO: COMPLETE ALL METHODS*/
 
     @Autowired
     private ProductRepository productRepository;
@@ -29,7 +30,11 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
 
     @Override
     public List<ProductResponseDTO> getAll() {
-        return null;
+        List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .map(product -> mapper.map(product, ProductResponseDTO.class))
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -57,7 +62,5 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
     }
 
     @Override
-    public void delete(Long id) {
-
-    }
+    public void delete(Long id) {}
 }
