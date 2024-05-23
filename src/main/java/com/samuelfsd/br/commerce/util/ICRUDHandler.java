@@ -1,9 +1,11 @@
 package com.samuelfsd.br.commerce.util;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 public interface ICRUDHandler<REQ, RES> {
-    List<RES> getAll();
+    Page<RES> getAll(Pageable pageable);
 
     RES getById(Long id);
 
