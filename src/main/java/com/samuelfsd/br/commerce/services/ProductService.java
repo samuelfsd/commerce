@@ -7,14 +7,14 @@ import com.samuelfsd.br.commerce.repositories.ProductRepository;
 import com.samuelfsd.br.commerce.util.ICRUDHandler;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductResponseDTO> {
@@ -30,12 +30,12 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
 
     @Transactional(readOnly = true)
     @Override
-    public List<ProductResponseDTO> getAll() {
-        List<Product> products = productRepository.findAll();
+    public Page<ProductResponseDTO> getAll(Pageable pageable) {
+        Page<Product> products = productRepository.findAll(pageable);
 
-        return products.stream()
-                .map(product -> mapper.map(product, ProductResponseDTO.class))
-                .toList();
+        return products.map(product -> mapper.map(product, ProductResponseDTO.class));
+
+
     }
 
     @Transactional(readOnly = true)
