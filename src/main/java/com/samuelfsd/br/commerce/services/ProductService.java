@@ -28,6 +28,7 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
     private ModelMapper mapper;
 
 
+    @Transactional(readOnly = true)
     @Override
     public List<ProductResponseDTO> getAll() {
         List<Product> products = productRepository.findAll();
