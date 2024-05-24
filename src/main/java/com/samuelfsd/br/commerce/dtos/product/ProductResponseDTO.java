@@ -1,3 +1,3 @@
 package com.samuelfsd.br.commerce.dtos.product;
 
-public class ProductResponseDTO extends ProductRequestDTO{}
+public class ProductResponseDTO extends ProductRequestDTO {}

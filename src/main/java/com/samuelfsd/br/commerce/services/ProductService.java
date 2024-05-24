@@ -19,8 +19,6 @@ import java.util.Optional;
 @Service
 public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductResponseDTO> {
 
-    /*TODO: COMPLETE ALL METHODS*/
-
     @Autowired
     private ProductRepository productRepository;
 
@@ -52,9 +50,13 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
         return mapper.map(product, ProductResponseDTO.class);
     }
 
+    @Transactional
     @Override
     public ProductResponseDTO create(ProductRequestDTO dto) {
-        return null;
+        Product product = mapper.map(dto, Product.class);
+        productRepository.save(product);
+
+        return mapper.map(product, ProductResponseDTO.class);
     }
 
     @Override
@@ -63,5 +65,5 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
     }
 
     @Override
-    public void delete(Long id) {}
+    public void delete(Long id) { /* TODO create delete method */ }
 }
