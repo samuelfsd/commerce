@@ -61,7 +61,14 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
 
     @Override
     public ProductResponseDTO update(Long id, ProductRequestDTO dto) {
-        return null;
+        Product product = productRepository.getReferenceById(id);
+
+        product = mapper.map(dto, Product.class);
+        product.setId(id);
+
+        product = productRepository.save(product);
+
+        return mapper.map(product, ProductResponseDTO.class);
     }
 
     @Override
