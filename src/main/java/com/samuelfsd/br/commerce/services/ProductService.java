@@ -32,8 +32,6 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
         Page<Product> products = productRepository.findAll(pageable);
 
         return products.map(product -> mapper.map(product, ProductResponseDTO.class));
-
-
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +57,7 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
         return mapper.map(product, ProductResponseDTO.class);
     }
 
+    @Transactional
     @Override
     public ProductResponseDTO update(Long id, ProductRequestDTO dto) {
         Product product = productRepository.getReferenceById(id);
@@ -71,6 +70,15 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
         return mapper.map(product, ProductResponseDTO.class);
     }
 
+    @Transactional
     @Override
-    public void delete(Long id) { /* TODO create delete method */ }
+    public void delete(Long id) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (product.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrado um produto com este id");
+        }
+
+        productRepository.delete(product.get());
+    }
 }
