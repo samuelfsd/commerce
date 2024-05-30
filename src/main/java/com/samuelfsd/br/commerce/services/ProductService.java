@@ -3,14 +3,19 @@ package com.samuelfsd.br.commerce.services;
 import com.samuelfsd.br.commerce.dtos.product.ProductRequestDTO;
 import com.samuelfsd.br.commerce.dtos.product.ProductResponseDTO;
 import com.samuelfsd.br.commerce.entities.Product;
+import com.samuelfsd.br.commerce.exceptions.DatabaseException;
+import com.samuelfsd.br.commerce.exceptions.ResourceNotFoundException;
 import com.samuelfsd.br.commerce.repositories.ProductRepository;
 import com.samuelfsd.br.commerce.util.ICRUDHandler;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -37,13 +42,8 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
     @Transactional(readOnly = true)
     @Override
     public ProductResponseDTO getById(Long id) {
-        Optional<Product> productOpt = productRepository.findById(id);
-
-        if(productOpt.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrado um produto com este id");
-        }
-
-        Product product = productOpt.get();
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Não foi encotnrado um produto com este id"));
 
         return mapper.map(product, ProductResponseDTO.class);
     }
@@ -60,25 +60,27 @@ public class ProductService implements ICRUDHandler<ProductRequestDTO, ProductRe
     @Transactional
     @Override
     public ProductResponseDTO update(Long id, ProductRequestDTO dto) {
-        Product product = productRepository.getReferenceById(id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Não foi encontrado um produto com este id"));
 
         product = mapper.map(dto, Product.class);
-        product.setId(id);
+        product.setId(dto.getId());
 
         product = productRepository.save(product);
 
         return mapper.map(product, ProductResponseDTO.class);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public void delete(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-
-        if (product.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrado um produto com este id");
+        if (!productRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Não foi encontrado um produto com este id");
         }
-
-        productRepository.delete(product.get());
+      try {
+          productRepository.deleteById(id);
+      } catch (DataIntegrityViolationException e ) {
+          throw new DatabaseException("Falha de integridade referencial.");
+      }
     }
 }
