@@ -4,6 +4,7 @@ import com.samuelfsd.br.commerce.common.ApiPrefix;
 import com.samuelfsd.br.commerce.dtos.product.ProductRequestDTO;
 import com.samuelfsd.br.commerce.dtos.product.ProductResponseDTO;
 import com.samuelfsd.br.commerce.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,14 +37,14 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> create(@RequestBody ProductRequestDTO dto) {
+    public ResponseEntity<ProductResponseDTO> create(@Valid @RequestBody ProductRequestDTO dto) {
         ProductResponseDTO response = productService.create(dto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> update(@PathVariable Long id , @RequestBody ProductRequestDTO dto) {
+    public ResponseEntity<ProductResponseDTO> update(@PathVariable Long id ,@Valid @RequestBody ProductRequestDTO dto) {
         return ResponseEntity.ok(productService.update(id, dto));
     }
 
