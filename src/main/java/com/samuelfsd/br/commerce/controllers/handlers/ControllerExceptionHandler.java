@@ -2,7 +2,6 @@ package com.samuelfsd.br.commerce.controllers.handlers;
 
 import com.samuelfsd.br.commerce.exceptions.CustomError;
 import com.samuelfsd.br.commerce.exceptions.CustomValidationError;
-import com.samuelfsd.br.commerce.exceptions.DatabaseException;
 import com.samuelfsd.br.commerce.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,6 @@ public class ControllerExceptionHandler {
 
         return ResponseEntity.status(status).body(err);
     }
-    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<CustomError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
 
